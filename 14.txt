@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <conio.h>
+#include<stdlib.h>
+
+void main() {
+    FILE *fin1, *fin2, *fout3;
+    char ch1, ch2;
+
+    
+
+    // Open input files for reading
+    fin1 = fopen("file1.txt", "r");
+    fin2 = fopen("file2.txt", "r");
+    
+    // Check if input files are opened successfully
+    if (fin1 == NULL || fin2 == NULL) {
+        printf("Error in opening input files");
+        getch();
+        exit(1);
+    }
+
+    // Open output file for writing differences
+    fout3 = fopen("file3.txt", "w");
+    
+    // Check if the output file is opened successfully
+    if (fout3 == NULL) {
+        printf("Error in opening output file");
+        getch();
+        exit(1);
+    }
+
+    // Compare and write differences to the output file
+    ch1 = getc(fin1);
+    ch2 = getc(fin2);
+    
+    while (ch1 != EOF || ch2 != EOF) {
+        if (ch1 != ch2) {
+            fputc(ch2, fout3);
+        }
+
+        ch1 = getc(fin1);
+        ch2 = getc(fin2);
+    }
+
+    // Close all files
+    fclose(fin1);
+    fclose(fin2);
+    fclose(fout3);
+
+    // Open the output file for reading differences
+    fout3 = fopen("file3.txt", "r");
+
+    // Check if the output file is opened successfully
+    if (fout3 == NULL) {
+        printf("Error in opening output file for reading");
+        getch();
+        exit(1);
+    }
+
+    // Read and display differences from the output file
+    ch1 = getc(fout3);
+
+    if (ch1 == EOF) {
+        printf("No difference between file1 and file2");
+    } else {
+        printf("Differences between file1 and file2 are:\n");
+        while (ch1 != EOF) {
+            printf("%c", ch1);
+            ch1 = getc(fout3);
+        }
+    }
+
+    // Close the output file
+    fclose(fout3);
+
+    getch();
+}

@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* left;
+    struct node* right;
+};
+
+typedef struct node* NODE;
+
+NODE createNode(int key) {
+    NODE newNode = (NODE)malloc(sizeof(struct node));
+    newNode->data = key;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+void insert(NODE root, int key) {
+    NODE prev = NULL;
+    while (root != NULL) {
+        prev = root;
+        if (key == root->data) {
+            printf("Cannot insert %d, already in BST", key);
+            return;
+        }
+        else if (key < root->data) {
+            root = root->left;
+        }
+        else {
+            root = root->right;
+        }
+    }
+    NODE new = createNode(key);
+    if (key < prev->data) {
+        prev->left = new;
+    }
+    else {
+        prev->right = new;
+    }
+}
+
+NODE inOrderPredecessor(NODE root) {
+    root = root->left;
+    while (root->right != NULL) {
+        root = root->right;
+    }
+    return root;
+}
+
+NODE deleteNode(NODE root, int value) {
+    NODE iPre;
+    if (root == NULL) {
+        return NULL;
+    }
+    if (root->left == NULL && root->right == NULL) {
+        free(root);
+        return NULL;
+    }
+
+    //searching for the node to be deleted
+    if (value < root->data) {
+        root->left = deleteNode(root->left, value);
+    }
+    else if (value > root->data) {
+        root->right = deleteNode(root->right, value);
+    }
+    //deletion strategy when the node is found
+    else {
+        iPre = inOrderPredecessor(root);
+        root->data = iPre->data;
+        root->left = deleteNode(root->left, iPre->data);
+    }
+    return root;
+}
+
+void inorderTraversal(NODE root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("%d ", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+int main() {
+    int option;
+    NODE root;
+    root = createNode(0); // Initializing root with NULL
+    printf("Enter the data for the root node\n");
+    scanf("%d", &root->data);
+    while (1) {
+        printf("\nTree operations\n");
+        printf("1.Insert\n2.Delete\n3.Display\n4.Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &option);
+        switch (option) {
+        case 1:
+            printf("Enter the data: ");
+            int key;
+            scanf("%d", &key);
+            insert(root, key);
+            break;
+        case 2:
+            printf("Enter the element to be deleted: ");
+            int value;
+            scanf("%d", &value);
+            root = deleteNode(root, value);
+            break;
+        case 3:
+            printf("\nInorder traversal\n");
+            inorderTraversal(root);
+            break;
+        case 4:
+            exit(0);
+        default:
+            printf("Invalid choice\n");
+        }
+    }
+}

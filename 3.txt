@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <string.h>
+
+int top = -1, j = 0;
+char infix[20], postfix[20], stack[20];
+
+void push(char symbol)
+{
+    stack[++top] = symbol;
+}
+
+char pop()
+{
+    return stack[top--];
+}
+
+int isOperator(char symbol)
+{
+    return (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^');
+}
+
+int preceed(char symbol)
+{
+    switch (symbol)
+    {
+    case '^':
+        return 3;
+    case '/':
+    case '*':
+        return 2;
+    case '+':
+    case '-':
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+void infixToPostfix()
+{
+    int length = strlen(infix);
+    push('#');
+    for (int i = 0; i < length; i++)
+    {
+        char symbol = infix[i];
+        if (symbol == '(')
+        {
+            push(symbol);
+        }
+        else if (symbol == ')')
+        {
+            while (stack[top] != '(')
+            {
+                postfix[j++] = pop();
+            }
+            pop(); // Remove '(' from the stack
+        }
+        else if (isOperator(symbol))
+        {
+            while (preceed(stack[top]) >= preceed(symbol))
+            {
+                postfix[j++] = pop();
+            }
+            push(symbol);
+        }
+        else
+        {
+            postfix[j++] = symbol;
+        }
+    }
+    while (stack[top] != '#')
+    {
+        postfix[j++] = pop();
+    }
+    postfix[j] = '\0'; // Add the null terminator to the postfix expression
+}
+
+int main()
+{
+    printf("Enter infix expression: ");
+    scanf("%s", infix);
+
+    infixToPostfix();
+
+    printf("Postfix expression is: %s\n", postfix);
+
+    return 0;
+}

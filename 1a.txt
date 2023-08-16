@@ -1,0 +1,72 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+#define Size 10
+int stack[Size];
+
+int push(int top){
+    int item;
+    if(top==(Size-1)){
+        printf("Stack is Full\n");
+        return top;
+    }
+    printf("Enter the item to be pushed :\n");
+    scanf("%d",&item);
+    stack[++top]=item;
+    printf("%d is succesfully pushed\n", item);
+    return top;
+}
+
+int pop(int top){
+    if(top==-1){
+        printf("The Stack is empty");
+        return top;
+    }
+    else{
+        printf("%d is succesfully popped \n",stack[top]);
+        top--;
+        return top;
+    }
+}
+
+void display(int top){
+    int i;
+    if(top==-1){
+        printf("The Stack is empty");
+    }
+    else{
+        printf("Status of stack\n");
+        for(i=top;i>=0;i--){
+            printf("%d\n",stack[i]);
+        }
+    }
+}
+void main(){
+    int top=-1,option;
+    while(1){
+        printf("\n Stack operations\n");
+        printf("1.Push\n2.Pop\n3.Display\n4.Exit\nEnter Your Choice:\n");
+        scanf("%d",&option);
+        switch (option)
+        {
+        case 1:
+            top=push(top);
+            getch();
+            break;
+        case 2:
+            top=pop(top);
+            getch();
+            break;
+        case 3:
+            display(top);
+            getch();
+            break;
+        case 4:
+            exit(0);
+        default:
+            printf("Invalid Choice\n");
+            break;
+        }
+    
+    }
+}
